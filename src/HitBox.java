@@ -13,6 +13,14 @@ public class HitBox {
 		this.rectangles.add(r);
 	}
 	
+	public void move(int dx, int dy) {
+		for (int i = 0; i < this.rectangles.size(); i++) {
+			Rectangle rect = this.rectangles.get(i);
+			rect.setX(rect.getX() + dx);
+			rect.setY(rect.getY() + dy);
+		}
+	}
+	
 	public boolean intersects(HitBox other) {
 		for (int i = 0; i < this.rectangles.size(); i++) {
 			for (int j = 0; j < other.rectangles.size(); j++) {
