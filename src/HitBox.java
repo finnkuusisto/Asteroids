@@ -1,7 +1,9 @@
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HitBox {
+public class HitBox implements Renderable {
 	
 	private List<Rectangle> rectangles;
 	
@@ -13,7 +15,7 @@ public class HitBox {
 		this.rectangles.add(r);
 	}
 	
-	public void move(int dx, int dy) {
+	public void move(double dx, double dy) {
 		for (int i = 0; i < this.rectangles.size(); i++) {
 			Rectangle rect = this.rectangles.get(i);
 			rect.setX(rect.getX() + dx);
@@ -32,6 +34,18 @@ public class HitBox {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void render(Graphics g) {
+		Color old = g.getColor();
+		g.setColor(Color.YELLOW);
+		for (int i = 0; i < this.rectangles.size(); i++) {
+			Rectangle rect = this.rectangles.get(i);
+			g.drawRect((int)rect.getX(), (int)rect.getY(),
+					(int)rect.getWidth(), (int)rect.getHeight());
+		}
+		g.setColor(old);
 	}
 
 }

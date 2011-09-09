@@ -25,7 +25,7 @@ public class Controller implements KeyListener, MouseInputListener,
 	
 	//mouse events
 	private static boolean mouseDown = false;
-	private static Vector2D mousePosition = new Vector2D(-1, -1);
+	private static IntVec2D mousePosition = new IntVec2D(-1, -1);
 	
 	private static boolean[] keys = new boolean[Controller.NUM_KEYS];
 	private static Controller controller = new Controller();
@@ -41,7 +41,7 @@ public class Controller implements KeyListener, MouseInputListener,
 				Controller.keys[key] : false;
 	}
 	
-	public static Vector2D getMousePosition() {
+	public static IntVec2D getMousePosition() {
 		return Controller.mousePosition;
 	}
 	

@@ -40,6 +40,7 @@ public class App {
 		this.canvasBuffer = this.canvas.getBufferStrategy();
 		//init controller
 		this.canvas.addKeyListener(Controller.getListener());
+		this.frame.addKeyListener(Controller.getListener());
 		this.canvas.addFocusListener(Controller.getListener());
 		this.canvas.addMouseListener(Controller.getListener());
 		this.canvas.addMouseMotionListener(Controller.getListener());
@@ -71,7 +72,7 @@ public class App {
 			}
 			//compute ticks since last update
 			long currTime = System.nanoTime();
-			double ticksPassed = (((currTime - lastUpdate) / 
+			double ticksPassed = (((double)(currTime - lastUpdate) / 
 					this.NANOSEC_PER_SEC) * this.TICKS_PER_SECOND);
 			lastUpdate = currTime;
 			//update
@@ -96,6 +97,7 @@ public class App {
 			}
 			finally {
 				g.dispose();
+				this.canvasBuffer.show();
 				this.canvas.getToolkit().sync();
 				//sleep a little if needed
 				long msUntilNextFrame = (nextFrame - System.nanoTime()) /

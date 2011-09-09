@@ -1,61 +1,61 @@
 public class Rectangle {
 
 	//why use java.awt.Rectangle when you can write your own?
-	private int[] points;
+	private double[] points;
 	
-	public Rectangle(int x, int y, int w, int h) {
-		this.points = new int[4];
+	public Rectangle(double x, double y, double w, double h) {
+		this.points = new double[4];
 		this.points[0] = x;
 		this.points[1] = y;
 		this.points[2] = w;
 		this.points[3] = h;
 	}
 	
-	public int getX() {
+	public double getX() {
 		return this.points[0];
 	}
 	
-	public int getY() {
+	public double getY() {
 		return this.points[1];
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return this.points[2];
 	}
 	
-	public int getHeight() {
+	public double getHeight() {
 		return this.points[3];
 	}
 	
-	public int left() {
+	public double left() {
 		return this.points[0];
 	}
 	
-	public int right() {
+	public double right() {
 		return this.points[0] + this.points[2];
 	}
 	
-	public int top() {
+	public double top() {
 		return this.points[1];
 	}
 	
-	public int bottom() {
+	public double bottom() {
 		return this.points[1] + this.points[3];
 	}
 	
-	public void setX(int x) {
+	public void setX(double x) {
 		this.points[0] = x;
 	}
 	
-	public void setY(int y) {
+	public void setY(double y) {
 		this.points[1] = y;
 	}
 	
-	public void setWidth(int w) {
+	public void setWidth(double w) {
 		this.points[2] = w;
 	}
 	
-	public void setHeight(int h) {
+	public void setHeight(double h) {
 		this.points[3] = h;
 	}
 	
