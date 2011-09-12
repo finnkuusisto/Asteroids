@@ -25,7 +25,7 @@ public class Controller implements KeyListener, MouseInputListener,
 	
 	//mouse events
 	private static boolean mouseDown = false;
-	private static IntVec2D mousePosition = new IntVec2D(-1, -1);
+	private static DoubleVec2D mousePosition = new DoubleVec2D(-1, -1);
 	
 	private static boolean[] keys = new boolean[Controller.NUM_KEYS];
 	private static Controller controller = new Controller();
@@ -41,7 +41,7 @@ public class Controller implements KeyListener, MouseInputListener,
 				Controller.keys[key] : false;
 	}
 	
-	public static IntVec2D getMousePosition() {
+	public static DoubleVec2D getMousePosition() {
 		return Controller.mousePosition;
 	}
 	
@@ -170,10 +170,10 @@ public class Controller implements KeyListener, MouseInputListener,
 	}
 
 	@Override
-	public void focusGained(FocusEvent arg0) { /*unused*/ }
+	public void focusGained(FocusEvent e) { /*unused*/ }
 
 	@Override
-	public void focusLost(FocusEvent arg0) {
+	public void focusLost(FocusEvent e) {
 		Controller.mouseDown = false;
 		for (int i = 0; i < Controller.keys.length; i++) {
 			Controller.keys[i] = false;

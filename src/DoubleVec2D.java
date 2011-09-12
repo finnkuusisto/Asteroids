@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class DoubleVec2D {
 
 	private static final int X = 0;
@@ -25,6 +27,16 @@ public class DoubleVec2D {
 		this.vec[DoubleVec2D.Y] = y;
 	}
 	
+	public double magnitude() {
+		return Math.sqrt((this.getX() * this.getX()) +
+				(this.getY() * this.getY()));
+	}
+	
+	public DoubleVec2D normalized() {
+		double length = this.magnitude();
+		return new DoubleVec2D((this.getX() / length), (this.getY() / length));
+	}
+	
 	public DoubleVec2D add(DoubleVec2D other) {
 		return new DoubleVec2D(this.getX() + other.getX(),
 				this.getY() + other.getY());
@@ -33,6 +45,10 @@ public class DoubleVec2D {
 	public DoubleVec2D subtract(DoubleVec2D other) {
 		return new DoubleVec2D(this.getX() - other.getX(),
 				this.getY() - other.getY());
+	}
+	
+	public String toString() {
+		return Arrays.toString(this.vec);
 	}
 	
 }

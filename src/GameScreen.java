@@ -5,7 +5,8 @@ public class GameScreen implements Screen {
 	private Ship player;
 	
 	public GameScreen() {
-		this.player = new Ship(new DoubleVec2D(100,100), new DoubleVec2D(0,1));
+		//start in center facing up
+		this.player = new Ship(new DoubleVec2D(400,300), new DoubleVec2D(0,-1));
 	}
 
 	@Override

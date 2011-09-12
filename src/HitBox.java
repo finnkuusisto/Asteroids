@@ -11,6 +11,10 @@ public class HitBox implements Renderable {
 		this.rectangles = new ArrayList<Rectangle>(1);
 	}
 	
+	public void addRectangles(List<Rectangle> list) {
+		this.rectangles.addAll(list);
+	}
+	
 	public void addRectangle(Rectangle r) {
 		this.rectangles.add(r);
 	}

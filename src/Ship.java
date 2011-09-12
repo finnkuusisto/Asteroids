@@ -1,5 +1,8 @@
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class Ship implements Entity, Renderable, Collidable {
 
@@ -17,12 +20,12 @@ public class Ship implements Entity, Renderable, Collidable {
 		this.position = position;
 		this.direction = direction;
 		this.hitBox = new HitBox();
-		Rectangle rect = ImageUtils.getBoundingRectangle(Ship.IMG);
-		//Rectangle rect = new Rectangle(0, 0, Ship.IMG.getWidth(),
-		//		Ship.IMG.getHeight());
-		rect.setX(this.position.getX() + rect.getX());
-		rect.setY(this.position.getY() + rect.getY());
-		this.hitBox.addRectangle(rect);
+		List<Rectangle> rects = ImageUtils.getBoundingRectangles(Ship.IMG,
+				1, 1);
+		this.hitBox.addRectangles(rects);
+		//now shift the hit box to the ship's position
+		this.hitBox.move(this.position.getX() - (Ship.IMG.getWidth() / 2),
+				this.position.getY() - (Ship.IMG.getHeight() / 2));
 	}
 	
 	@Override
@@ -49,6 +52,7 @@ public class Ship implements Entity, Renderable, Collidable {
 
 	@Override
 	public void update(double ticksPassed) {
+		this.faceMouse();
 		// TODO debug movement
 		double dx = 0;
 		double dy = 0;
@@ -68,12 +72,29 @@ public class Ship implements Entity, Renderable, Collidable {
 		this.position.setY(this.position.getY() + dy);
 		this.hitBox.move(dx, dy);
 	}
+	
+	private void faceMouse() {
+		this.direction =
+			Controller.getMousePosition().subtract(this.position).normalized();
+	}
 
 	@Override
 	public void render(Graphics g) {
 		//TODO fix for direction vector
-		g.drawImage(Ship.IMG, (int)this.position.getX(),
-				(int)this.position.getY(), null);
+		Graphics2D g2 = (Graphics2D)g;
+		//the direction vector should always be normalized and
+		//calculate from (1,0), but add pi/2 since the image is vertical and
+		//positive y is downward
+		double rot = Math.atan2(this.direction.getY(), this.direction.getX()) +
+			(Math.PI / 2);
+		AffineTransform xform = 
+			AffineTransform.getTranslateInstance(this.position.getX(),
+					this.position.getY());
+		xform.rotate(rot);
+		//center image on position
+		xform.translate(-(Ship.IMG.getWidth() / 2),
+				-(Ship.IMG.getHeight() / 2));
+		g2.drawImage(Ship.IMG, xform, null);
 		//draw hitbox for now
 		this.hitBox.render(g); //TODO debug
 	}
