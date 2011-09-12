@@ -19,8 +19,8 @@ public class App {
 	private final long NANOSECS_PER_FRAME = NANOSEC_PER_SEC / FRAMES_PER_SEC;
 	private final long TICKS_PER_SECOND = 30L;
 	
-	private final int WIDTH = 800;
-	private final int HEIGHT = 600;
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 600;
 	
 	public void init() {
 		//init window crap
@@ -30,12 +30,12 @@ public class App {
 		this.frame.setResizable(false);
 		this.canvas = new Canvas();
 		this.canvas.setIgnoreRepaint(true);
-		this.canvas.setPreferredSize(new Dimension(this.WIDTH,this.HEIGHT));
+		this.canvas.setPreferredSize(new Dimension(App.WIDTH, App.HEIGHT));
 		this.canvas.setBackground(Color.BLACK);
 		this.frame.add(canvas);
 		this.frame.pack();
-		this.frame.setLocation((screenSize.width / 2) - (this.WIDTH / 2),
-				(screenSize.height / 2) - (this.HEIGHT / 2));
+		this.frame.setLocation((screenSize.width / 2) - (App.WIDTH / 2),
+				(screenSize.height / 2) - (App.HEIGHT / 2));
 		this.canvas.createBufferStrategy(2);
 		this.canvasBuffer = this.canvas.getBufferStrategy();
 		//init controller
@@ -92,7 +92,7 @@ public class App {
 			Graphics g = null;
 			try {
 				g = this.canvasBuffer.getDrawGraphics();
-				g.fillRect(0, 0, this.WIDTH, this.HEIGHT);
+				g.fillRect(0, 0, App.WIDTH, App.HEIGHT);
 				screen.render(g);
 			}
 			finally {

@@ -12,14 +12,18 @@ public class Ship implements Entity, Renderable, Collidable {
 	
 	private DoubleVec2D direction;
 	private DoubleVec2D position;
-	private DoubleVec2D velocity; //TODO
+	private DoubleVec2D velocity;
 	private HitBox hitBox; //TODO need to be careful of drift due to precision
-	private double acceleration = 1;
+	private double acceleration = 0.2;
+	private double drag = 0.05;
 	
 	public Ship(DoubleVec2D position, DoubleVec2D direction) {
 		this.position = position;
 		this.direction = direction;
+		this.velocity = new DoubleVec2D(0,0);
 		this.hitBox = new HitBox();
+		//make the hitbox 1x1 for now since I don't want to deal with
+		//rotating the hitbox
 		List<Rectangle> rects = ImageUtils.getBoundingRectangles(Ship.IMG,
 				1, 1);
 		this.hitBox.addRectangles(rects);
@@ -52,30 +56,41 @@ public class Ship implements Entity, Renderable, Collidable {
 
 	@Override
 	public void update(double ticksPassed) {
-		this.faceMouse();
-		// TODO debug movement
-		double dx = 0;
-		double dy = 0;
-		if (Controller.isKeyDown(Controller.K_W)) {
-			dy -= this.acceleration * ticksPassed;
-		}
-		if (Controller.isKeyDown(Controller.K_S)) {
-			dy += this.acceleration * ticksPassed;
-		}
-		if (Controller.isKeyDown(Controller.K_A)) {
-			dx -= this.acceleration * ticksPassed;
-		}
-		if (Controller.isKeyDown(Controller.K_D)) {
-			dx += this.acceleration * ticksPassed;
-		}
+		//move ship according to velocity
+		double dx = this.velocity.getX() * ticksPassed;
+		double dy = this.velocity.getY() * ticksPassed;
+		//TODO check for boundaries
 		this.position.setX(this.position.getX() + dx);
 		this.position.setY(this.position.getY() + dy);
+		//move the hitbox too
 		this.hitBox.move(dx, dy);
-	}
-	
-	private void faceMouse() {
+		//slow velocity due to drag
+		double xDrag = this.drag * ticksPassed *
+			Math.abs(this.direction.getX());
+		double yDrag = this.drag * ticksPassed *
+			Math.abs(this.direction.getY());
+		dx = (this.velocity.getX() > 0) ?
+			-Math.min(xDrag, this.velocity.getX()) :
+			Math.min(xDrag, -this.velocity.getX());
+		dy = (this.velocity.getY() > 0) ?
+			-Math.min(yDrag, this.velocity.getY()) :
+			Math.min(yDrag, -this.velocity.getY());
+		this.velocity.setX(this.velocity.getX() + dx);
+		this.velocity.setY(this.velocity.getY() + dy);
+		//face the mouse
 		this.direction =
 			Controller.getMousePosition().subtract(this.position).normalized();
+		//modify velocity for controls
+		dx = this.direction.getX() * this.acceleration * ticksPassed;
+		dy = this.direction.getY() * this.acceleration * ticksPassed;
+		if (Controller.isKeyDown(Controller.K_W)) {
+			this.velocity.setX(this.velocity.getX() + dx);
+			this.velocity.setY(this.velocity.getY() + dy);
+		}
+		if (Controller.isKeyDown(Controller.K_S)) {
+			this.velocity.setX(this.velocity.getX() - dx);
+			this.velocity.setY(this.velocity.getY() - dy);
+		}
 	}
 
 	@Override

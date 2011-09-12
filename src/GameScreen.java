@@ -6,7 +6,9 @@ public class GameScreen implements Screen {
 	
 	public GameScreen() {
 		//start in center facing up
-		this.player = new Ship(new DoubleVec2D(400,300), new DoubleVec2D(0,-1));
+		DoubleVec2D pos = new DoubleVec2D((App.WIDTH / 2), (App.HEIGHT / 2));
+		DoubleVec2D dir = new DoubleVec2D(0, -1);
+		this.player = new Ship(pos, dir);
 	}
 
 	@Override
