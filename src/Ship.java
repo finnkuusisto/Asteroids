@@ -37,7 +37,7 @@ public class Ship implements Entity, Renderable, Collidable {
 		//TODO maybe this should be configurable
 		this.bulletCooldown = 4;
 		this.ticksSinceBullet = 0;
-		this.firedBullets = new ArrayList<Bullet>();
+		this.firedBullets = new ArrayList<Bullet>(5);
 	}
 	
 	public boolean hasFiredBullets() {

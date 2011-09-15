@@ -12,7 +12,7 @@ public class GameScreen implements Screen {
 		DoubleVec2D pos = new DoubleVec2D((App.WIDTH / 2), (App.HEIGHT / 2));
 		DoubleVec2D dir = new DoubleVec2D(0, -1);
 		this.player = new Ship(pos, dir);
-		this.bullets = new ArrayList<Bullet>();
+		this.bullets = new ArrayList<Bullet>(50);
 	}
 
 	@Override
