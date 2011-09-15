@@ -2,6 +2,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Ship implements Entity, Renderable, Collidable {
@@ -13,9 +14,12 @@ public class Ship implements Entity, Renderable, Collidable {
 	private DoubleVec2D direction;
 	private DoubleVec2D position;
 	private DoubleVec2D velocity;
-	private HitBox hitBox; //TODO need to be careful of drift due to precision
+	private HitBox hitBox; //TODO need to be careful of drift due to precision?
 	private double acceleration = 0.2;
 	private double drag = 0.05;
+	private double bulletCooldown; //in ticks
+	private double ticksSinceBullet;
+	private List<Bullet> firedBullets;
 	
 	public Ship(DoubleVec2D position, DoubleVec2D direction) {
 		this.position = position;
@@ -30,6 +34,19 @@ public class Ship implements Entity, Renderable, Collidable {
 		//now shift the hit box to the ship's position
 		this.hitBox.move(this.position.getX() - (Ship.IMG.getWidth() / 2),
 				this.position.getY() - (Ship.IMG.getHeight() / 2));
+		//TODO maybe this should be configurable
+		this.bulletCooldown = 4;
+		this.ticksSinceBullet = 0;
+		this.firedBullets = new ArrayList<Bullet>();
+	}
+	
+	public boolean hasFiredBullets() {
+		return this.firedBullets.size() > 0;
+	}
+	
+	public List<Bullet> getFiredBullets() {
+		//perhaps this isn't the best way to handle it
+		return this.firedBullets;
 	}
 	
 	@Override
@@ -59,7 +76,23 @@ public class Ship implements Entity, Renderable, Collidable {
 		//move ship according to velocity
 		double dx = this.velocity.getX() * ticksPassed;
 		double dy = this.velocity.getY() * ticksPassed;
-		//TODO check for boundaries
+		//check boundaries first
+		if ((this.position.getX() + dx) < 0) { //off left
+			dx = this.position.getX();
+			this.velocity.setX(0);
+		}
+		else if ((this.position.getX() + dx > App.WIDTH)) { //off right
+			dx = (App.WIDTH - this.position.getX());
+			this.velocity.setX(0);
+		}
+		if ((this.position.getY() + dy) < 0) { //off top
+			dy = this.position.getY();
+			this.velocity.setY(0);
+		}
+		else if ((this.position.getY() + dy) > App.HEIGHT) { //off bottom
+			dy = (App.HEIGHT - this.position.getY());
+			this.velocity.setY(0);
+		}
 		this.position.setX(this.position.getX() + dx);
 		this.position.setY(this.position.getY() + dy);
 		//move the hitbox too
@@ -91,11 +124,24 @@ public class Ship implements Entity, Renderable, Collidable {
 			this.velocity.setX(this.velocity.getX() - dx);
 			this.velocity.setY(this.velocity.getY() - dy);
 		}
+		//spawn bullets
+		//TODO fix rate of fire
+		this.firedBullets.clear();
+		this.ticksSinceBullet += ticksPassed;
+		while (Controller.isKeyDown(Controller.K_SPACE) &&
+				this.ticksSinceBullet > this.bulletCooldown) {
+			DoubleVec2D position = new DoubleVec2D(this.position.getX(),
+					this.position.getY());
+			DoubleVec2D direction = new DoubleVec2D(this.direction.getX(),
+					this.direction.getY());
+			this.firedBullets.add(new Bullet(position, direction));
+			this.ticksSinceBullet = Math.max(0, 
+					(this.ticksSinceBullet - this.bulletCooldown));
+		}
 	}
 
 	@Override
 	public void render(Graphics g) {
-		//TODO fix for direction vector
 		Graphics2D g2 = (Graphics2D)g;
 		//the direction vector should always be normalized and
 		//calculate from (1,0), but add pi/2 since the image is vertical and
@@ -121,8 +167,7 @@ public class Ship implements Entity, Renderable, Collidable {
 
 	@Override
 	public boolean isColliding(Collidable other) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.hitBox.intersects(other.getHitBox());
 	}
 
 }
