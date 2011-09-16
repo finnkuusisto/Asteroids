@@ -13,11 +13,12 @@ public class App {
 	private BufferStrategy canvasBuffer; //on which everything is drawn
 	private ScreenManager screenManager;
 	
-	private final long NANOSEC_PER_SEC = 1000000000L;
-	private final long NANOSEC_PER_MS = 1000000L;
-	private final long FRAMES_PER_SEC = 60L;
-	private final long NANOSECS_PER_FRAME = NANOSEC_PER_SEC / FRAMES_PER_SEC;
-	private final long TICKS_PER_SECOND = 30L;
+	private static final long NANOSEC_PER_SEC = 1000000000L;
+	private static final long NANOSEC_PER_MS = 1000000L;
+	private static final long FRAMES_PER_SEC = 60L;
+	private static final long NANOSECS_PER_FRAME =
+		(NANOSEC_PER_SEC / FRAMES_PER_SEC);
+	public static final long TICKS_PER_SECOND = 30L;
 	
 	public static final int WIDTH = 800;
 	public static final int HEIGHT = 600;
@@ -73,13 +74,13 @@ public class App {
 			//compute ticks since last update
 			long currTime = System.nanoTime();
 			double ticksPassed = (((double)(currTime - lastUpdate) / 
-					this.NANOSEC_PER_SEC) * this.TICKS_PER_SECOND);
+					App.NANOSEC_PER_SEC) * App.TICKS_PER_SECOND);
 			lastUpdate = currTime;
 			//update
 			screen.update(ticksPassed);
 			//compute FPS
 			currTime = System.nanoTime();
-			if (currTime - lastFrame >= this.NANOSEC_PER_SEC) {
+			if (currTime - lastFrame >= App.NANOSEC_PER_SEC) {
 				System.out.println("FPS: " + frameCount);
 				lastFrame = currTime;
 				frameCount = 0;
@@ -87,7 +88,7 @@ public class App {
 			else {
 				frameCount++;
 			}
-			nextFrame = currTime + this.NANOSECS_PER_FRAME;
+			nextFrame = currTime + App.NANOSECS_PER_FRAME;
 			//render
 			Graphics g = null;
 			try {
@@ -101,7 +102,7 @@ public class App {
 				this.canvas.getToolkit().sync();
 				//sleep a little if needed
 				long msUntilNextFrame = (nextFrame - System.nanoTime()) /
-										this.NANOSEC_PER_MS;
+										App.NANOSEC_PER_MS;
 				if (msUntilNextFrame > 0) {
 					try {
 						Thread.sleep(msUntilNextFrame);

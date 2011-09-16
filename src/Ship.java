@@ -124,12 +124,12 @@ public class Ship implements Entity, Renderable, Collidable {
 			this.velocity.setX(this.velocity.getX() - dx);
 			this.velocity.setY(this.velocity.getY() - dy);
 		}
-		//spawn bullets
-		//TODO fix rate of fire
+		//spawn bullets, considering cooldown
 		this.firedBullets.clear();
 		this.ticksSinceBullet += ticksPassed;
-		while (Controller.isKeyDown(Controller.K_SPACE) &&
-				this.ticksSinceBullet > this.bulletCooldown) {
+		while ((Controller.isKeyDown(Controller.K_SPACE) ||
+				Controller.isMouseDown()) &&
+				(this.ticksSinceBullet > this.bulletCooldown)) {
 			DoubleVec2D position = new DoubleVec2D(this.position.getX(),
 					this.position.getY());
 			DoubleVec2D direction = new DoubleVec2D(this.direction.getX(),

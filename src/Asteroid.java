@@ -4,19 +4,19 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class Bullet implements Entity, Renderable, Collidable {
-
-	private static final String IMG_FNAME = "/shot.gif";
+public class Asteroid implements Entity, Collidable, Renderable {
+	
+	private static final String IMG_FNAME = "/alien.gif";
 	//this should be static because all bullets look the same
-	private static BufferedImage IMG = ImageUtils.loadImage(Bullet.IMG_FNAME);
+	private static BufferedImage IMG = ImageUtils.loadImage(Asteroid.IMG_FNAME);
 	
 	private DoubleVec2D direction;
 	private DoubleVec2D position;
 	private DoubleVec2D velocity; //TODO
 	private HitBox hitBox;
-	private double speed = 10.0;
+	private double speed = 8.0;
 	
-	public Bullet(DoubleVec2D position, DoubleVec2D direction) {
+	public Asteroid(DoubleVec2D position, DoubleVec2D direction) {
 		this.position = position;
 		this.direction = direction;
 		//TODO determine velocity, direction should be normalized
@@ -25,14 +25,14 @@ public class Bullet implements Entity, Renderable, Collidable {
 		this.hitBox = new HitBox();
 		//make the hitbox 1x1 for now since I don't want to deal with
 		//rotating the hitbox
-		List<Rectangle> rects = ImageUtils.getBoundingRectangles(Bullet.IMG,
+		List<Rectangle> rects = ImageUtils.getBoundingRectangles(Asteroid.IMG,
 				1, 1);
 		this.hitBox.addRectangles(rects);
-		//now shift the hit box to the ship's position
-		this.hitBox.move(this.position.getX() - (Bullet.IMG.getWidth() / 2),
-				this.position.getY() - (Bullet.IMG.getHeight() / 2));
+		//now shift the hit box to the asteroid's position
+		this.hitBox.move(this.position.getX() - (Asteroid.IMG.getWidth() / 2),
+				this.position.getY() - (Asteroid.IMG.getHeight() / 2));
 	}
-
+	
 	@Override
 	public DoubleVec2D getDirection() {
 		return this.direction;
@@ -56,6 +56,7 @@ public class Bullet implements Entity, Renderable, Collidable {
 	@Override
 	public void update(double ticksPassed) {
 		//move bullet according to velocity
+		//TODO bounce of walls or something?
 		double dx = this.velocity.getX() * ticksPassed;
 		double dy = this.velocity.getY() * ticksPassed;
 		this.position.setX(this.position.getX() + dx);
@@ -67,19 +68,12 @@ public class Bullet implements Entity, Renderable, Collidable {
 	@Override
 	public void render(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		//the direction vector should always be normalized and
-		//calculate from (1,0), but add pi/2 since the image is vertical and
-		//positive y is downward
-		double rot = Math.atan2(this.direction.getY(), this.direction.getX()) +
-			(Math.PI / 2);
-		AffineTransform xform = 
-			AffineTransform.getTranslateInstance(this.position.getX(),
-					this.position.getY());
-		xform.rotate(rot);
 		//center image on position
-		xform.translate(-(Bullet.IMG.getWidth() / 2),
-				-(Bullet.IMG.getHeight() / 2));
-		g2.drawImage(Bullet.IMG, xform, null);
+		AffineTransform xform = 
+			AffineTransform.getTranslateInstance(this.position.getX() - 
+					(Asteroid.IMG.getWidth() / 2),
+					this.position.getY() - (Asteroid.IMG.getHeight() / 2));
+		g2.drawImage(Asteroid.IMG, xform, null);
 		//draw hitbox for now
 		this.hitBox.render(g); //TODO debug
 	}
