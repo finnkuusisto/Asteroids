@@ -4,11 +4,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class Ship implements Entity, Renderable, Collidable {
+public class EnemyShip implements Entity, Renderable, Collidable {
 
-	private static final String IMG_FNAME = "/ship.gif";
+	private static final String IMG_FNAME = "/enemy_ship.gif";
 	//this should be static because all ships look the same
-	private static BufferedImage IMG = ImageUtils.loadImage(Ship.IMG_FNAME);
+	private static BufferedImage IMG = 
+		ImageUtils.loadImage(EnemyShip.IMG_FNAME);
 	
 	private DoubleVec2D direction;
 	private DoubleVec2D position;
@@ -16,23 +17,30 @@ public class Ship implements Entity, Renderable, Collidable {
 	private HitBox hitBox; //TODO need to be careful of drift due to precision?
 	private double acceleration = 0.2;
 	private double drag = 0.05;
+	private double maxRot = (Math.PI / 16);
 	private double bulletCooldown = 4; //in ticks
 	private double ticksSinceBullet;
+	private double maxAngleToFire = (Math.PI / 8);
+	private double maxDistanceToFire = 300;
 	private Bullet firedBullet;
+	//needs to know about the player
+	private Ship player;
 	
-	public Ship(DoubleVec2D position, DoubleVec2D direction) {
+	public EnemyShip(DoubleVec2D position, DoubleVec2D direction,
+			Ship player) {
 		this.position = position;
 		this.direction = direction;
 		this.velocity = new DoubleVec2D(0,0);
 		this.hitBox = new HitBox();
+		this.player = player;
 		//make the hitbox 1x1 for now since I don't want to deal with
 		//rotating the hitbox
-		List<Rectangle> rects = ImageUtils.getBoundingRectangles(Ship.IMG,
+		List<Rectangle> rects = ImageUtils.getBoundingRectangles(EnemyShip.IMG,
 				1, 1);
 		this.hitBox.addRectangles(rects);
 		//now shift the hit box to the ship's position
-		this.hitBox.move(this.position.getX() - (Ship.IMG.getWidth() / 2),
-				this.position.getY() - (Ship.IMG.getHeight() / 2));
+		this.hitBox.move(this.position.getX() - (EnemyShip.IMG.getWidth() / 2),
+				this.position.getY() - (EnemyShip.IMG.getHeight() / 2));
 		this.ticksSinceBullet = 0;
 		this.firedBullet = null;
 	}
@@ -43,7 +51,7 @@ public class Ship implements Entity, Renderable, Collidable {
 	
 	public Bullet getFiredBullet() {
 		Bullet ret = this.firedBullet;
-		firedBullet = null;
+		this.firedBullet = null;
 		return ret;
 	}
 	
@@ -108,24 +116,34 @@ public class Ship implements Entity, Renderable, Collidable {
 			Math.min(yDrag, -this.velocity.getY());
 		this.velocity.setX(this.velocity.getX() + dx);
 		this.velocity.setY(this.velocity.getY() + dy);
-		//face the mouse
-		this.direction =
-			Controller.getMousePosition().subtract(this.position).normalized();
+		//try to face the player
+		DoubleVec2D toPlayer =
+			this.player.getPosition().subtract(this.position);
+		DoubleVec2D toPlayerNorm = toPlayer.normalized();
+		double angleBetween = Math.acos(toPlayerNorm.dot(this.direction));
+		double rot = (angleBetween > 0) ? 
+				Math.min(this.maxRot, angleBetween) * ticksPassed:
+				Math.max(-this.maxRot, angleBetween) * ticksPassed;
+		double cosTheta = Math.cos(rot);
+		double sinTheta = Math.sin(rot);
+		double xPrime = (this.direction.getX() * cosTheta) - 
+			(this.direction.getY() * sinTheta);
+		double yPrime = (this.direction.getX() * sinTheta) + 
+			(this.direction.getY() * cosTheta);
+		this.direction = new DoubleVec2D(xPrime, yPrime);
 		//modify velocity for controls
+		//TODO maybe modify for angle from player
 		dx = this.direction.getX() * this.acceleration * ticksPassed;
 		dy = this.direction.getY() * this.acceleration * ticksPassed;
-		if (Controller.isKeyDown(Controller.K_W)) {
+		if (toPlayer.magnitude() > 1.0) {
 			this.velocity.setX(this.velocity.getX() + dx);
 			this.velocity.setY(this.velocity.getY() + dy);
 		}
-		if (Controller.isKeyDown(Controller.K_S)) {
-			this.velocity.setX(this.velocity.getX() - dx);
-			this.velocity.setY(this.velocity.getY() - dy);
-		}
 		//spawn bullet, considering cooldown
+		//only shoot when facing the player and near the player
 		this.ticksSinceBullet += ticksPassed;
-		if ((Controller.isKeyDown(Controller.K_SPACE) ||
-				Controller.isMouseDown()) &&
+		if ((Math.abs(angleBetween) < this.maxAngleToFire) &&
+				(Math.abs(toPlayer.magnitude()) < this.maxDistanceToFire) &&
 				(this.ticksSinceBullet >= this.bulletCooldown)) {
 			DoubleVec2D position = new DoubleVec2D(this.position.getX(),
 					this.position.getY());
@@ -149,9 +167,9 @@ public class Ship implements Entity, Renderable, Collidable {
 					this.position.getY());
 		xform.rotate(rot);
 		//center image on position
-		xform.translate(-(Ship.IMG.getWidth() / 2),
-				-(Ship.IMG.getHeight() / 2));
-		g2.drawImage(Ship.IMG, xform, null);
+		xform.translate(-(EnemyShip.IMG.getWidth() / 2),
+				-(EnemyShip.IMG.getHeight() / 2));
+		g2.drawImage(EnemyShip.IMG, xform, null);
 		//draw hitbox for now
 		this.hitBox.render(g); //TODO debug
 	}

@@ -59,6 +59,23 @@ public class Asteroid implements Entity, Collidable, Renderable {
 		//TODO bounce of walls or something?
 		double dx = this.velocity.getX() * ticksPassed;
 		double dy = this.velocity.getY() * ticksPassed;
+		//check boundaries first
+		if ((this.position.getX() + dx) < 0) { //off left
+			dx = this.position.getX();
+			this.velocity.setX(-this.velocity.getX());
+		}
+		else if ((this.position.getX() + dx > App.WIDTH)) { //off right
+			dx = (App.WIDTH - this.position.getX());
+			this.velocity.setX(-this.velocity.getX());
+		}
+		if ((this.position.getY() + dy) < 0) { //off top
+			dy = this.position.getY();
+			this.velocity.setY(-this.velocity.getY());
+		}
+		else if ((this.position.getY() + dy) > App.HEIGHT) { //off bottom
+			dy = (App.HEIGHT - this.position.getY());
+			this.velocity.setY(-this.velocity.getY());
+		}
 		this.position.setX(this.position.getX() + dx);
 		this.position.setY(this.position.getY() + dy);
 		//move the hitbox too
