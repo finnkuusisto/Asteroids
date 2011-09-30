@@ -92,7 +92,7 @@ public class Asteroid implements Entity, Collidable, Renderable {
 					this.position.getY() - (Asteroid.IMG.getHeight() / 2));
 		g2.drawImage(Asteroid.IMG, xform, null);
 		//draw hitbox for now
-		this.hitBox.render(g); //TODO debug
+		//this.hitBox.render(g); //TODO debug
 	}
 
 	@Override

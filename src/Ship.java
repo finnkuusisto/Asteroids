@@ -60,13 +60,11 @@ public class Ship implements Entity, Renderable, Collidable {
 	@Override
 	public void setDirection(DoubleVec2D direction) {
 		this.direction = direction;
-
 	}
 
 	@Override
 	public void setPosition(DoubleVec2D position) {
 		this.position = position;
-
 	}
 
 	@Override
@@ -131,7 +129,7 @@ public class Ship implements Entity, Renderable, Collidable {
 					this.position.getY());
 			DoubleVec2D direction = new DoubleVec2D(this.direction.getX(),
 					this.direction.getY());
-			this.firedBullet = new Bullet(position, direction);
+			this.firedBullet = new Bullet(position, direction, true);
 			this.ticksSinceBullet = 0;
 		}
 	}
@@ -153,7 +151,7 @@ public class Ship implements Entity, Renderable, Collidable {
 				-(Ship.IMG.getHeight() / 2));
 		g2.drawImage(Ship.IMG, xform, null);
 		//draw hitbox for now
-		this.hitBox.render(g); //TODO debug
+		//this.hitBox.render(g); //TODO debug
 	}
 
 	@Override

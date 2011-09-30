@@ -7,19 +7,25 @@ import java.util.List;
 public class Bullet implements Entity, Renderable, Collidable {
 
 	private static final String IMG_FNAME = "/shot.gif";
-	//this should be static because all bullets look the same
+	private static final String ENEMY_IMG_FNAME = "/enemy_shot.gif";
+	//these should be static because all bullet objects look the same
 	private static BufferedImage IMG = ImageUtils.loadImage(Bullet.IMG_FNAME);
+	private static BufferedImage ENEMY_IMG =
+		ImageUtils.loadImage(Bullet.ENEMY_IMG_FNAME);
 	
 	private DoubleVec2D direction;
 	private DoubleVec2D position;
-	private DoubleVec2D velocity; //TODO
+	private DoubleVec2D velocity;
 	private HitBox hitBox;
 	private double speed = 10.0;
+	private boolean playerBullet;
 	
-	public Bullet(DoubleVec2D position, DoubleVec2D direction) {
+	public Bullet(DoubleVec2D position, DoubleVec2D direction,
+			boolean playerBullet) {
 		this.position = position;
 		this.direction = direction;
-		//TODO determine velocity, direction should be normalized
+		this.playerBullet = playerBullet;
+		//determine velocity, direction should be normalized
 		this.velocity = new DoubleVec2D(this.speed * this.direction.getX(),
 				this.speed * this.direction.getY());
 		this.hitBox = new HitBox();
@@ -77,11 +83,11 @@ public class Bullet implements Entity, Renderable, Collidable {
 					this.position.getY());
 		xform.rotate(rot);
 		//center image on position
-		xform.translate(-(Bullet.IMG.getWidth() / 2),
-				-(Bullet.IMG.getHeight() / 2));
-		g2.drawImage(Bullet.IMG, xform, null);
+		BufferedImage img = this.playerBullet ? Bullet.IMG : Bullet.ENEMY_IMG;
+		xform.translate(-(img.getWidth() / 2), -(img.getHeight() / 2));
+		g2.drawImage(img, xform, null);
 		//draw hitbox for now
-		this.hitBox.render(g); //TODO debug
+		//this.hitBox.render(g); //TODO debug
 	}
 
 	@Override
