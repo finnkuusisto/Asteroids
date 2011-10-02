@@ -58,6 +58,7 @@ public class GameScreen implements Screen {
 		this.player.update(ticksPassed);
 		//and check if the player fired any bullets
 		if (this.player.hasFiredBullet()) {
+			Sound.SHOT.play();
 			this.bullets.add(this.player.getFiredBullet());
 		}
 	}
@@ -66,6 +67,7 @@ public class GameScreen implements Screen {
 		this.enemyShip.update(ticksPassed);
 		//and check if the enemy ship has fired bullets
 		if (this.enemyShip.hasFiredBullet()) {
+			Sound.SHOT.play();
 			this.enemyBullets.add(this.enemyShip.getFiredBullet());
 		}
 	}
@@ -99,6 +101,7 @@ public class GameScreen implements Screen {
 				this.bullets.remove(i);
 			}
 			else if (bullet.isColliding(this.enemyShip)) { // hit enemy
+				Sound.HIT.play();
 				this.score += GameScreen.SHOOT_ENEMY;
 				this.bullets.remove(i);
 			}
@@ -119,6 +122,7 @@ public class GameScreen implements Screen {
 				this.enemyBullets.remove(i);
 			}
 			else if (bullet.isColliding(this.player)) { //hit player
+				Sound.HIT.play();
 				this.score += GameScreen.HIT_BY_ENEMY;
 				//remove bullet
 				this.enemyBullets.remove(i);
