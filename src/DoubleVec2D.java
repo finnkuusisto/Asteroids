@@ -51,6 +51,10 @@ public class DoubleVec2D {
 		return (this.getX() * other.getX()) + (this.getY() * other.getY());
 	}
 	
+	public double perpDot(DoubleVec2D other) {
+		return (-this.getY() * other.getX()) + (this.getX() * other.getY());
+	}
+	
 	public String toString() {
 		return Arrays.toString(this.vec);
 	}

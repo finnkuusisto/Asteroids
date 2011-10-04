@@ -21,7 +21,7 @@ public class EnemyShip implements Entity, Renderable, Collidable {
 	private double bulletCooldown = 4; //in ticks
 	private double ticksSinceBullet;
 	private double maxAngleToFire = (Math.PI / 8);
-	private double maxDistanceToFire = 300;
+	private double maxDistanceToFire = 200;
 	private Bullet firedBullet;
 	//needs to know about the player
 	private Ship player;
@@ -118,7 +118,9 @@ public class EnemyShip implements Entity, Renderable, Collidable {
 		DoubleVec2D toPlayer =
 			this.player.getPosition().subtract(this.position);
 		DoubleVec2D toPlayerNorm = toPlayer.normalized();
-		double angleBetween = Math.acos(toPlayerNorm.dot(this.direction));
+		//perpdot = sin_theta, dot = cos_theta, negative y is up
+		double angleBetween = -Math.atan2(toPlayerNorm.perpDot(this.direction),
+				toPlayerNorm.dot(this.direction));
 		double rot = (angleBetween > 0) ? 
 				Math.min(this.maxRot, angleBetween) * ticksPassed:
 				Math.max(-this.maxRot, angleBetween) * ticksPassed;
