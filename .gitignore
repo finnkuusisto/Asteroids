@@ -1,6 +1,7 @@
 ############
 # Compiled #
 ############
+bin/
 *.class
 
 #################
@@ -13,8 +14,7 @@
 ##########
 # Assets #
 ##########
-*.gif
-*.wav
+# Free Assets For Everyone! #
 
 ########
 # Misc #

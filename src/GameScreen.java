@@ -1,3 +1,16 @@
+/*
+* Copyright (C) 2011 by Finn Kuusisto
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the MIT license.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*
+* You should have received a copy of the MIT License along with this program.
+*/
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -15,7 +28,7 @@ public class GameScreen implements Screen {
 	private EnemyShip enemyShip;
 	private long score;
 	private List<Bullet> bullets;
-	private List<Bullet> enemyBullets; //TODO make this appear different
+	private List<Bullet> enemyBullets;
 	private List<Asteroid> asteroids;
 	private double ticksSinceAsteroid;
 	private double ticksPerAsteroid;
@@ -97,6 +110,7 @@ public class GameScreen implements Screen {
 				this.bullets.remove(i);
 			}
 			else if (hitAsteroid) { //hit asteroid
+				Sound.EXPLOSION.play();
 				this.score += GameScreen.SHOOT_ASTEROID;
 				this.bullets.remove(i);
 			}

@@ -1,3 +1,16 @@
+/*
+* Copyright (C) 2011 by Finn Kuusisto
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the MIT license.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*
+* You should have received a copy of the MIT License along with this program.
+*/
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -11,6 +24,7 @@ public class Sound {
 	
 	public static final Sound SHOT = new Sound("/shot.wav", 10);
 	public static final Sound HIT = new Sound("/hit.wav", 5);
+	public static final Sound EXPLOSION = new Sound("/explosion.wav", 3);
 
 	private Clip[] clips;
 	private int position;
